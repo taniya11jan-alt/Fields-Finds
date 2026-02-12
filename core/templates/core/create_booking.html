@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-4 p-4">
+                <h2 class="fw-bold mb-4" style="color: var(--village-green);">Request Tool Rental</h2>
+                
+                <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-3">
+                    <img src="{{ tool.image.url }}" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                    <div class="ms-3">
+                        <h5 class="mb-1 fw-bold">{{ tool.name }}</h5>
+                        <p class="mb-0 text-muted">Owner: {{ tool.owner.username }} | ₹{{ tool.price_per_day }}/day</p>
+                    </div>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Rental Start Date</label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Return Date</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="form-label fw-bold small">Handover Preference</label>
+                            <select name="handover_mode" class="form-select">
+                                <option value="pickup">Self Pick-up (Default)</option>
+                                <option value="delivery">Preferred Delivery (+₹250)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="form-label fw-bold small">Message to Lender</label>
+                            <textarea name="message" class="form-control" rows="3" placeholder="Tell the owner when you need it..."></textarea>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-3">
+                                Confirm Booking Request
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

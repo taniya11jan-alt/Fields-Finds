@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h2 style="color: var(--village-green); font-weight: bold;">🌾 Local Farm Weather: {{ district }}</h2>
+    <p class="text-muted">Plan your sowing and harvesting based on the 5-day forecast.</p>
+</div>
+
+<div class="row g-4 justify-content-center">
+    {% for day in forecast %}
+    <div class="col-md-2 col-6">
+        <div class="card text-center shadow-sm border-0" style="background: white;">
+            <div class="card-header text-white" style="background-color: var(--leaf-green);">
+                {{ day.dt_txt|slice:"5:10" }} </div>
+            <div class="card-body">
+                <img src="http://openweathermap.org/img/wn/{{ day.weather.0.icon }}@2x.png" style="width: 60px;">
+                <h3 class="fw-bold">{{ day.main.temp|floatformat:0 }}°C</h3>
+                <p class="small text-capitalize" style="color: var(--village-green);">{{ day.weather.0.description }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="mt-5 p-4 rounded-4 shadow-sm" style="background-color: #E8F0E6; border-left: 8px solid var(--village-green);">
+    <h5 style="color: var(--village-green);">🚜 Farming Tip for {{ district }}</h5>
+    <p class="mb-0">If you see heavy clouds, avoid renting electric tools. Keep tractors under cover if rain is expected!</p>
+</div>
+{% endblock %}

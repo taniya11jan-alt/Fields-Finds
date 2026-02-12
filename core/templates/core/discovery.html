@@ -1,0 +1,176 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="search-header p-5 mb-5 shadow-sm text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-4" style="color: white; font-family: 'Crimson Text', serif; font-size: 2.5rem;">
+            Find the Right Tool for Your Land
+        </h2>
+        <form method="GET" action="{% url 'tool_discovery' %}" class="row g-2 justify-content-center">
+            <div class="col-md-5">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-0">🔍</span>
+                    <input type="text" name="search"
+                           class="form-control border-0 rounded-end"
+                           placeholder="Search for Tractors, Tillers, Pumps..."
+                           value="{{ request.GET.search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-0">📍</span>
+                    <input type="text" name="location"
+                           class="form-control border-0 rounded-end"
+                           placeholder="Village or Pincode"
+                           value="{{ request.GET.location }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit"
+                        class="btn btn-warning btn-lg w-100 fw-bold shadow-sm">
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold" style="color: var(--village-green);">Available Machinery</h4>
+        <span class="text-muted">{{ tools|length }} tools found in your area</span>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for tool in tools %}
+        <div class="col">
+            <div class="card h-100 tool-card border-0 shadow-sm">
+
+                <div class="position-relative">
+
+                    {# ✅ IMAGE LOGIC FIX ONLY #}
+                    {% if tool.image %}
+                        <img src="{{ tool.image.url }}"
+                             class="card-img-top"
+                             alt="{{ tool.name }}"
+                             style="height: 220px; object-fit: cover;">
+                    {% else %}
+                        {% if "Tractor" in tool.name or "tractor" in tool.name %}
+                            <img src="{% static 'images/tractor.avif' %}"
+                                 class="card-img-top"
+                                 alt="{{ tool.name }}"
+                                 style="height: 220px; object-fit: cover;">
+                        {% elif "Tiller" in tool.name or "tiller" in tool.name %}
+                            <img src="{% static 'images/tiller.webp' %}"
+                                 class="card-img-top"
+                                 alt="{{ tool.name }}"
+                                 style="height: 220px; object-fit: cover;">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800"
+                                 class="card-img-top"
+                                 alt="{{ tool.name }}"
+                                 style="height: 220px; object-fit: cover;">
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="price-badge">
+                        ₹{{ tool.price_per_day }}<small>/day</small>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title fw-bold mb-0"
+                            style="color: var(--village-green);">
+                            {{ tool.name }}
+                        </h5>
+                        <span class="badge bg-light text-dark border">
+                            {{ tool.category }}
+                        </span>
+                    </div>
+
+                    <p class="text-muted small mb-3">
+                        📍 {{ tool.owner.profile.village|default:"Local Village" }}
+                    </p>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="text-warning me-2">⭐⭐⭐⭐⭐</div>
+                        <span class="small text-muted">(4.8)</span>
+                    </div>
+
+                    <a href="{% url 'tool_detail' tool.id %}"
+                       class="btn btn-green w-100 py-2 fw-bold">
+                        View Details & Book
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="display-1 mb-3">🚜</div>
+            <h3>No tools found matching your search.</h3>
+            <p class="text-muted">Try a different keyword or check nearby villages.</p>
+            <a href="{% url 'tool_discovery' %}"
+               class="btn btn-outline-success rounded-pill mt-3">
+                Reset Filters
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.search-header {
+    background: linear-gradient(rgba(45, 90, 39, 0.8), rgba(45, 90, 39, 0.8)),
+                url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200');
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 40px 40px;
+}
+
+.tool-card {
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.tool-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12) !important;
+}
+
+.price-badge {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background-color: var(--village-green);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.btn-green {
+    background-color: var(--village-green);
+    color: white;
+    border-radius: 12px;
+    border: none;
+}
+
+.btn-green:hover {
+    background-color: var(--leaf-green);
+    color: white;
+}
+
+.input-group-text {
+    border-radius: 15px 0 0 15px !important;
+}
+
+.form-control {
+    border-radius: 0 15px 15px 0 !important;
+}
+</style>
+{% endblock %}

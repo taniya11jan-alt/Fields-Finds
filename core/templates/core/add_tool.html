@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: var(--village-green);">
+                    🚜 List Your Agricultural Tool
+                </h2>
+                <p class="text-muted">
+                    Share your equipment with nearby farmers and earn income.
+                </p>
+            </div>
+
+            <!-- Card -->
+            <div class="card border-0 shadow-lg p-4" style="border-radius: 25px;">
+
+                <!-- Info note -->
+                <div class="alert alert-success small mb-4">
+                    <strong>Note:</strong> Your tool will be visible only after
+                    <strong>Admin approval</strong>.
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Tool Name</label>
+                            {{ form.name }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Category</label>
+                            {{ form.category }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold small">Description</label>
+                            {{ form.description }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Price per Day (₹)</label>
+                            {{ form.price_per_day }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Tool Image</label>
+                            {{ form.image }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Available From</label>
+                            {{ form.available_from }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small">Available Till</label>
+                            {{ form.available_to }}
+                        </div>
+
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-green px-5 py-2 fw-bold">
+                            Submit for Approval
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Match site input style */
+    input, select, textarea {
+        border-radius: 12px !important;
+        padding: 10px 12px;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .btn-green {
+        background-color: var(--village-green);
+        color: white;
+        border-radius: 12px;
+        border: none;
+    }
+
+    .btn-green:hover {
+        background-color: var(--leaf-green);
+        color: white;
+    }
+</style>
+{% endblock %}

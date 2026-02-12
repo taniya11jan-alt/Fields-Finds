@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 30px;">
+                <div class="row g-0">
+                    <div class="col-md-5 bg-success p-5 text-white d-flex flex-column justify-content-center" style="background-color: var(--village-green) !important;">
+                        <h2 class="fw-bold mb-4">Get in Touch</h2>
+                        <div class="mb-4">
+                            <h5>📍 Location</h5>
+                            <p class="opacity-75">Meerut, Uttar Pradesh, India</p>
+                        </div>
+                        <div class="mb-4">
+                            <h5>📞 Phone</h5>
+                            <p class="opacity-75">+91 98765 43210</p>
+                        </div>
+                        <div class="mb-4">
+                            <h5>✉️ Email</h5>
+                            <p class="opacity-75">support@fieldsandfinds.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-7 bg-white p-5">
+                        <h2 class="fw-bold mb-4" style="color: var(--village-green);">Send a Message</h2>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Your Name</label>
+                                <input type="text" class="form-control rounded-pill" placeholder="Enter name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Subject</label>
+                                <input type="text" class="form-control rounded-pill" placeholder="e.g. Help with listing a tool">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Message</label>
+                                <textarea class="form-control" rows="4" style="border-radius: 20px;" placeholder="How can we help you?"></textarea>
+                            </div>
+                            <button class="btn btn-green w-100 py-3 mt-3 fw-bold shadow">Send Message ✉️</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

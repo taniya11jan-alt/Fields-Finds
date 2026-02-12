@@ -1,0 +1,240 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row g-5">
+
+        <!-- IMAGE -->
+        <div class="col-md-6">
+            {% if tool.image %}
+                <img src="{{ tool.image.url }}" class="img-fluid rounded-4 shadow">
+            {% else %}
+                <div class="bg-light rounded-4 d-flex align-items-center justify-content-center"
+                     style="height:300px;">
+                    No Image
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- DETAILS -->
+        <div class="col-md-6">
+            <h1 class="fw-bold">{{ tool.name }}</h1>
+            <p class="badge bg-success">{{ tool.category|title }}</p>
+
+            <h3 class="text-success fw-bold mb-3">
+                ₹<span id="pricePerDay">{{ tool.price_per_day }}</span> / day
+            </h3>
+
+            <p class="text-muted mb-4">
+                {{ tool.description }}
+            </p>
+
+            <!-- ACTION CARD -->
+            <div class="card p-4 border-0 shadow-sm bg-light">
+
+                {% if user == tool.owner %}
+                    <div class="alert alert-info">
+                        This is your tool listing. Manage it from the dashboard.
+                    </div>
+                {% else %}
+                    <form method="POST" id="bookingForm">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <!-- DATES -->
+                            <div class="col-6">
+                                <label class="small fw-bold">Start Date</label>
+                                <input type="date" name="start_date" id="startDate"
+                                       class="form-control" required>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="small fw-bold">End Date</label>
+                                <input type="date" name="end_date" id="endDate"
+                                       class="form-control" required>
+                            </div>
+
+                            <!-- DELIVERY OPTION -->
+                            <div class="col-12 mt-4">
+                                <div class="delivery-box p-4 rounded-3 border bg-white">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">
+                                                🚚 Request Doorstep Delivery
+                                            </h6>
+                                            <p class="small text-muted mb-0">
+                                                Convenient delivery to your location (+ ₹100)
+                                            </p>
+                                        </div>
+
+                                        <div class="form-check form-switch delivery-switch">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="deliveryToggle"
+                                                   name="delivery_requested"
+                                                   value="1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PRICE SUMMARY -->
+                            <div class="col-12 mt-3">
+                                <div class="bg-white p-3 rounded border">
+                                    <p class="mb-1 small">
+                                        Tool Rent: ₹<span id="rentAmount">0</span>
+                                    </p>
+                                    <p class="mb-1 small">
+                                        Delivery Fee: ₹<span id="deliveryFee">0</span>
+                                    </p>
+                                    <hr>
+                                    <h5 class="fw-bold mb-0">
+                                        Total: ₹<span id="totalAmount">0</span>
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <!-- OPEN AGREEMENT -->
+                            <button type="button"
+                                    class="btn btn-success w-100 py-3 fw-bold mt-4"
+                                    id="openAgreementBtn">
+                                Send Rental Request
+                            </button>
+
+                        </div>
+                    </form>
+
+                    <!-- EXTRA ACTIONS -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{% url 'public_profile' tool.owner.username %}"
+                           class="btn btn-outline-secondary btn-sm">
+                            View Owner
+                        </a>
+
+                        <a href="{% url 'report_tool' tool.id %}"
+                           class="btn btn-outline-danger btn-sm">
+                            Report Tool
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- AGREEMENT MODAL -->
+<div class="modal fade" id="agreementModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Rental Agreement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <ul class="small">
+                    <li>Tool must be returned on agreed date</li>
+                    <li>Pickup & return proof is mandatory</li>
+                    <li>Damage charges apply based on evidence</li>
+                    <li>Delivery fee is non-refundable</li>
+                </ul>
+
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="agreeCheckbox">
+                    <label class="form-check-label fw-bold">
+                        I agree to the Terms & Conditions
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button class="btn btn-success" id="confirmBookingBtn" disabled>
+                    I Agree & Send Request
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- DELIVERY STYLING (UNCHANGED) -->
+<style>
+.delivery-box { transition: 0.3s ease; }
+.delivery-box:hover { box-shadow: 0 8px 18px rgba(0,0,0,0.08); }
+.delivery-switch .form-check-input {
+    width: 3.2rem;
+    height: 1.6rem;
+    transform: scale(1.2);
+}
+.delivery-switch .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+</style>
+
+<!-- LOGIC SCRIPT -->
+<script>
+const pricePerDay = parseFloat(document.getElementById('pricePerDay').innerText);
+const startDate = document.getElementById('startDate');
+const endDate = document.getElementById('endDate');
+const deliveryToggle = document.getElementById('deliveryToggle');
+
+const rentAmount = document.getElementById('rentAmount');
+const deliveryFee = document.getElementById('deliveryFee');
+const totalAmount = document.getElementById('totalAmount');
+
+const openAgreementBtn = document.getElementById('openAgreementBtn');
+const confirmBookingBtn = document.getElementById('confirmBookingBtn');
+const agreeCheckbox = document.getElementById('agreeCheckbox');
+const bookingForm = document.getElementById('bookingForm');
+
+const DELIVERY_COST = 100;
+
+function calculateTotal() {
+    if (!startDate.value || !endDate.value) return;
+
+    const start = new Date(startDate.value);
+    const end = new Date(endDate.value);
+
+    let days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    days = days <= 0 ? 1 : days;
+
+    let rent = days * pricePerDay;
+    let delivery = deliveryToggle.checked ? DELIVERY_COST : 0;
+
+    rentAmount.innerText = rent;
+    deliveryFee.innerText = delivery;
+    totalAmount.innerText = rent + delivery;
+}
+
+startDate.addEventListener('change', calculateTotal);
+endDate.addEventListener('change', calculateTotal);
+deliveryToggle.addEventListener('change', calculateTotal);
+
+/* OPEN AGREEMENT ONLY IF DATES FILLED */
+openAgreementBtn.addEventListener('click', () => {
+    if (!startDate.value || !endDate.value) {
+        alert("Please select start and end dates first.");
+        return;
+    }
+    new bootstrap.Modal(document.getElementById('agreementModal')).show();
+});
+
+/* ENABLE CONFIRM */
+agreeCheckbox.addEventListener('change', () => {
+    confirmBookingBtn.disabled = !agreeCheckbox.checked;
+});
+
+/* FINAL SUBMIT */
+confirmBookingBtn.addEventListener('click', () => {
+    bookingForm.submit();
+});
+</script>
+
+{% endblock %}

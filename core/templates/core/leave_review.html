@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 rounded-4 p-4 text-center">
+                <h3 class="fw-bold mb-3">Rate Your Experience</h3>
+                <p class="text-muted small">Your review helps other farmers build trust.</p>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label d-block fw-bold">Star Rating</label>
+                        <select name="rating" class="form-select form-select-lg text-center">
+                            <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                            <option value="4">⭐⭐⭐⭐ (Good)</option>
+                            <option value="3">⭐⭐⭐ (Average)</option>
+                            <option value="2">⭐⭐ (Fair)</option>
+                            <option value="1">⭐ (Poor)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label fw-bold small">Comments</label>
+                        <textarea name="comment" class="form-control" rows="3" placeholder="How was the tool/owner?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-3">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

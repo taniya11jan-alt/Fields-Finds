@@ -1,0 +1,160 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+
+    <!-- AGREEMENT CARD -->
+    <div class="card shadow-lg p-5 border-0"
+         id="printableArea"
+         style="max-width:800px;margin:auto;font-family:'serif';">
+
+        <!-- HEADER -->
+        <div class="text-center mb-4">
+            <h2 style="color:var(--village-green);">
+                Farming Equipment Rental Agreement
+            </h2>
+            <p class="text-muted small">
+                Generated via Fields & Finds Community Platform
+            </p>
+        </div>
+
+        <!-- PARTIES -->
+        <div class="row mb-4">
+            <div class="col-6">
+                <strong>Lender (Tool Owner):</strong><br>
+                {{ booking.tool.owner.first_name }} {{ booking.tool.owner.last_name }}<br>
+                Village: {{ booking.tool.owner.profile.village }}
+            </div>
+
+            <div class="col-6 text-end">
+                <strong>Borrower (Renter):</strong><br>
+                {{ booking.borrower.first_name }} {{ booking.borrower.last_name }}<br>
+                Village: {{ booking.borrower.profile.village }}
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- EQUIPMENT -->
+        <h4>1. Equipment Details</h4>
+        <p>
+            The Lender agrees to rent the following equipment to the Borrower:
+            <strong>{{ booking.tool.name }}</strong>.
+        </p>
+
+        <!-- RENTAL PERIOD -->
+        <h4>2. Rental Period</h4>
+        <p>
+            From <strong>{{ booking.start_date }}</strong>
+            to <strong>{{ booking.end_date }}</strong>.
+        </p>
+
+        <!-- PRICING -->
+        <h4>3. Pricing & Charges</h4>
+        <ul>
+            <li>
+                Base rental charge:
+                <strong>₹{{ booking.tool.price_per_day }} per day</strong>.
+            </li>
+
+            <li>
+                Total rental cost is calculated based on the number of usage days.
+            </li>
+
+            {% if booking.delivery_requested %}
+                <li>
+                    Delivery service requested with an additional
+                    <strong>delivery fee</strong>.
+                    This fee is non-refundable.
+                </li>
+            {% else %}
+                <li>
+                    No delivery service requested.
+                    Pickup and return are handled by the Borrower.
+                </li>
+            {% endif %}
+        </ul>
+
+        <!-- TERMS -->
+        <h4>4. Terms & Conditions</h4>
+        <ul>
+            <li>
+                The equipment must be used strictly for agricultural purposes.
+            </li>
+
+            <li>
+                The Borrower must return the equipment on or before the agreed
+                return date.
+            </li>
+
+            <li>
+                Photo proof is mandatory during both
+                <strong>pickup</strong> and <strong>return</strong>.
+            </li>
+
+            <li>
+                The equipment must be returned in the same condition as received,
+                excluding normal wear and tear.
+            </li>
+
+            <li>
+                In case of damage, uploaded photo proof will be used to assess
+                responsibility.
+            </li>
+
+            <li>
+                If damage is confirmed, a reasonable damage fee may be applied
+                as per platform guidelines.
+            </li>
+
+            <li>
+                Fuel and operational costs are the responsibility of the
+                Borrower unless otherwise agreed.
+            </li>
+
+            <li>
+                Fields & Finds acts as a facilitation platform and does not take
+                ownership of the equipment or physical transactions.
+            </li>
+        </ul>
+
+        <!-- SIGNATURES -->
+        <div class="row mt-5">
+            <div class="col-6 mt-4">
+                <hr style="width:80%;">
+                <p>Lender Signature</p>
+            </div>
+
+            <div class="col-6 mt-4 text-end">
+                <hr style="width:80%;margin-left:auto;">
+                <p>Borrower Signature</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="text-center mt-4 no-print">
+        <button onclick="window.print()"
+                class="btn btn-success px-4">
+            🖨️ Print Agreement
+        </button>
+
+        <a href="{% url 'dashboard' %}"
+           class="btn btn-outline-secondary ms-2">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+<!-- PRINT STYLES -->
+<style>
+@media print {
+    .no-print { display:none; }
+    body { background:white; }
+    .card { box-shadow:none; border:1px solid #ccc; }
+}
+</style>
+
+{% endblock %}

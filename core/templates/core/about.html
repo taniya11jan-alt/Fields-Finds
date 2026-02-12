@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold" style="color: var(--village-green); font-family: 'Crimson Text', serif;">Our Roots</h1>
+            <p class="lead text-muted">Fields & Finds was born out of a simple observation: Many farmers have expensive machinery sitting idle, while their neighbors struggle to afford the same tools.</p>
+            <p>Our mission is to create a digital bridge in every Indian village, ensuring that no land goes unplowed and no machine goes to waste. We believe in <strong>Community-Powered Agriculture.</strong></p>
+        </div>
+        <div class="col-lg-6">
+            <img src="{% static 'images/about.avif' %}" class="img-fluid rounded-4 shadow-lg" alt="Village Community">
+        </div>
+    </div>
+
+    <div class="row g-4 text-center mt-4">
+        <div class="col-md-4">
+            <div class="p-4 bg-white shadow-sm rounded-4 border-bottom border-success border-4">
+                <h2 class="fw-bold" style="color: var(--leaf-green);">500+</h2>
+                <p class="text-muted mb-0">Verified Farmers</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 bg-white shadow-sm rounded-4 border-bottom border-success border-4">
+                <h2 class="fw-bold" style="color: var(--leaf-green);">1200+</h2>
+                <p class="text-muted mb-0">Successful Rentals</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 bg-white shadow-sm rounded-4 border-bottom border-success border-4">
+                <h2 class="fw-bold" style="color: var(--leaf-green);">15+</h2>
+                <p class="text-muted mb-0">Villages Connected</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

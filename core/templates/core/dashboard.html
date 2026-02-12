@@ -1,0 +1,272 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid py-4" style="background-color: #f4f7f6; min-height: 100vh;">
+    <div class="container">
+
+        <!-- PROFILE / GREETING CARD -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-lg p-4"
+                     style="border-radius:20px;
+                            background:linear-gradient(135deg,#2D5A27,#4C7C32);
+                            color:white;">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" 
+                             style="width:60px;height:60px;background:#FFD700;color:#2D5A27;font-size:1.5rem;">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <div class="ms-4">
+                            <h3 class="fw-bold mb-0 text-white">
+                                Namaste, {{ user.first_name|default:user.username }}!
+                            </h3>
+                            <p class="mb-0 opacity-75 text-white">
+                                📍 {{ user.profile.village|default:"Local Village" }} |
+                                Verified Member ✅
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVITY -->
+        <div class="row mb-5">
+            <div class="col-lg-8">
+
+                <h5 class="fw-bold mb-3 text-dark">Your Activity Summary</h5>
+
+                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-header bg-white border-0 pt-3">
+                        <ul class="nav nav-pills nav-fill bg-light rounded-pill p-1">
+                            <li class="nav-item">
+                                <button class="nav-link active rounded-pill fw-bold"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-borrow">
+                                    🚜 My Borrowings
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link rounded-pill fw-bold"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-lend">
+                                    💰 My Lending
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body tab-content p-4">
+
+                        <!-- ================= BORROWINGS ================= -->
+                        <div class="tab-pane fade show active" id="pills-borrow">
+
+                            {% for booking in my_borrowings %}
+                                <div class="p-3 mb-3 border rounded-3 shadow-sm bg-white">
+
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">
+                                                {{ booking.tool.name }}
+                                            </h6>
+                                            <small class="text-muted">
+                                                {{ booking.start_date }} → {{ booking.end_date }}
+                                            </small>
+                                        </div>
+
+                                        <span class="badge px-3 py-2"
+                                              style="background:#E9F7EF;color:#28a745;font-weight:600;">
+                                            {{ booking.get_status_display }}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-2 mt-3">
+
+                                        <a href="{% url 'chat_room' booking.id %}"
+                                           class="btn btn-sm btn-success">
+                                            <i class="bi bi-chat-dots"></i> Chat
+                                        </a>
+
+                                        {% if booking.status == 'approved' or booking.status == 'picked_up' %}
+                                            <form action="{% url 'upload_handover_proof' booking.id %}"
+                                                  method="post"
+                                                  enctype="multipart/form-data"
+                                                  class="d-inline">
+                                                {% csrf_token %}
+                                                <input type="file"
+                                                       name="proof_image"
+                                                       hidden
+                                                       required
+                                                       id="proof{{ booking.id }}"
+                                                       onchange="this.form.submit()">
+                                                <label for="proof{{ booking.id }}"
+                                                       class="btn btn-sm btn-outline-success">
+                                                    <i class="bi bi-upload"></i>
+                                                    Upload Proof
+                                                </label>
+                                            </form>
+                                        {% endif %}
+
+                                        {% if booking.status == 'returned' and not booking.review %}
+                                            <form action="{% url 'leave_review' booking.id %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="rating" value="5">
+                                                <input type="hidden" name="comment" value="Good experience">
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-star"></i> Review
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            {% empty %}
+                                <div class="text-center py-4 text-muted">
+                                    No active tools borrowed.
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- ================= LENDING ================= -->
+                        <div class="tab-pane fade" id="pills-lend">
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <p class="text-muted mb-0 small">
+                                    Tools you are listing for others
+                                </p>
+                                <a href="{% url 'add_tool' %}"
+                                   class="btn btn-sm text-white"
+                                   style="background-color:#28a745;">
+                                    + Add New Tool
+                                </a>
+                            </div>
+
+                            {% for tool in my_tools %}
+                                <div class="p-3 mb-3 border rounded-3 shadow-sm bg-white">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0 fw-bold text-dark">
+                                            {{ tool.name }}
+                                        </h6>
+                                        <span class="fw-bold" style="color:#28a745;">
+                                            ₹{{ tool.price_per_day }}/day
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">
+                                        Status:
+                                        {% if tool.is_approved %}
+                                            Approved ✅
+                                        {% else %}
+                                            Pending ⏳
+                                        {% endif %}
+                                    </small>
+                                </div>
+                            {% empty %}
+                                <div class="text-center py-4 text-muted">
+                                    No tools listed yet.
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEATHER -->
+            <div class="col-lg-4">
+                <h5 class="fw-bold mb-3 text-dark">Weather Forecast</h5>
+                <div class="card border-0 shadow-sm text-white p-4"
+                     style="border-radius:15px;
+                            background:linear-gradient(135deg,#28a745,#1e7e34);">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h2 class="mb-0 fw-bold">28°C</h2>
+                            <p class="mb-0">Sunny Day</p>
+                        </div>
+                        <i class="bi bi-sun-fill" style="font-size:3rem;"></i>
+                    </div>
+                    <hr class="my-3" style="opacity:0.3;">
+                    <p class="small mb-0">
+                        Perfect weather for agricultural work in
+                        {{ user.profile.village|default:"your area" }}.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISCOVERY PREVIEW -->
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0 text-dark">
+                    Available Machinery Near You
+                </h5>
+                <a href="{% url 'tool_discovery' %}"
+                   class="fw-bold text-decoration-none"
+                   style="color:#28a745;">
+                    View All Machinery →
+                </a>
+            </div>
+
+            {% for tool in all_tools %}
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 border-0 shadow-sm tool-card-hover"
+                         style="border-radius:15px;">
+
+                        {% if tool.image %}
+                            <img src="{{ tool.image.url }}"
+                                 class="card-img-top"
+                                 style="height:160px;object-fit:cover;">
+                        {% else %}
+                            <img src="{% static 'images/tractor.avif' %}"
+                                 class="card-img-top"
+                                 style="height:160px;object-fit:cover;">
+                        {% endif %}
+
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold text-dark mb-1 text-truncate">
+                                {{ tool.name }}
+                            </h6>
+                            <p class="text-muted small mb-3">
+                                📍 {{ tool.owner.profile.village|default:"Local Village" }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold" style="color:#28a745;">
+                                    ₹{{ tool.price_per_day }}/day
+                                </span>
+                                <a href="{% url 'tool_detail' tool.id %}"
+                                   class="btn btn-sm rounded-pill px-3 text-white"
+                                   style="background-color:#28a745;">
+                                    Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">
+                        No other tools available at the moment.
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<style>
+.nav-pills .nav-link.active {
+    background-color:#28a745!important;
+    color:white!important;
+    box-shadow:0 4px 10px rgba(40,167,69,0.2);
+}
+.tool-card-hover { transition:0.3s; }
+.tool-card-hover:hover {
+    transform:translateY(-8px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.12)!important;
+}
+</style>
+
+{% endblock %}

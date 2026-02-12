@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4 p-4 text-center">
+
+                <i class="bi bi-camera-fill display-4 text-success mb-3"></i>
+
+                {% if proof_type == "pickup" %}
+                    <h3 class="fw-bold">Confirm Tool Pickup</h3>
+                    <p class="text-muted">
+                        Upload a photo of the tool at the time of pickup.
+                    </p>
+                {% else %}
+                    <h3 class="fw-bold">Confirm Tool Return</h3>
+                    <p class="text-muted">
+                        Upload a photo of the tool after returning it.
+                    </p>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label d-block p-5 border rounded-4 bg-light cursor-pointer">
+                            <input type="file" name="proof_image" class="d-none" required>
+                            <span class="text-muted">Click to select photo</span>
+                        </label>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label fw-bold small">
+                            Condition Notes (Optional)
+                        </label>
+                        <textarea name="notes" class="form-control"
+                                  placeholder="Mention any scratches, damage, or observations..."></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-success w-100 py-3 fw-bold rounded-3">
+                        Submit Proof
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

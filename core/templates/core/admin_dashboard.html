@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 style="color: var(--village-green); font-weight: bold;">🌾 Community Admin Dashboard</h2>
+        <p class="text-muted">Manage listings and keep the community safe.</p>
+    </div>
+</div>
+
+<div class="row mb-4 text-center">
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0" style="background-color: var(--village-green); color: white; border-radius: 15px;">
+            <h3>{{ total_users }}</h3>
+            <p class="mb-0">Registered Farmers</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm border-0" style="background-color: var(--leaf-green); color: white; border-radius: 15px;">
+            <h3>{{ total_bookings }}</h3>
+            <p class="mb-0">Total Rentals Completed</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">🚜 Pending Tool Approvals</h5>
+            </div>
+            <div class="card-body">
+                {% for tool in pending_tools %}
+                <div class="d-flex align-items-center p-3 mb-3 border rounded-3 bg-light">
+                    <img src="{{ tool.image.url }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;" class="me-3">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">{{ tool.name }}</h6>
+                        <small class="text-muted">by {{ tool.owner.first_name }} ({{ tool.owner.profile.village }})</small>
+                    </div>
+                    <div>
+                        <a href="{% url 'tool_detail' tool.id %}" class="btn btn-sm btn-outline-secondary">Review</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">All tools are currently approved!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+            <div class="card-header bg-danger text-white py-3" style="border-radius: 20px 20px 0 0;">
+                <h5 class="mb-0 fw-bold">🚩 Urgent Safety Reports</h5>
+            </div>
+            <div class="card-body">
+                {% for report in active_reports %}
+                <div class="p-3 mb-3 border-start border-danger border-4 bg-white shadow-sm rounded-2">
+                    <span class="badge bg-danger mb-2">{{ report.get_reason_display }}</span>
+                    <p class="mb-1"><strong>Item:</strong> {{ report.tool.name }}</p>
+                    <p class="small text-muted mb-2">"{{ report.description }}"</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Reporter: {{ report.reporter.first_name }}</small>
+                        <a href="{% url 'resolve_report' report.id %}" class="btn btn-sm btn-success">Mark Resolved</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted py-4">No active reports. The community is safe! ✅</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

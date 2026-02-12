@@ -1,0 +1,128 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero-container shadow-lg">
+    <div class="hero-overlay d-flex align-items-center justify-content-center text-center">
+        <div class="p-4" style="max-width: 800px;">
+            <h1 class="display-2 fw-bold text-white mb-3" style="font-family: 'Crimson Text', serif;">Fields & Finds</h1>
+            <p class="fs-4 text-white mb-4 opacity-90">Revolutionizing Village Agriculture through Community Sharing.</p>
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{% url 'register' %}" class="btn btn-warning btn-lg px-5 py-3 fw-bold rounded-pill shadow">Register Now 🚜</a>
+                <a href="#features" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">Explore Features</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5" id="features">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold" style="color: var(--village-green);">Modern Solutions for Modern Farmers</h2>
+        <p class="text-muted fs-5">Everything you need to grow your farm, right in your pocket.</p>
+        <div class="mx-auto" style="width: 100px; height: 5px; background: var(--leaf-green); border-radius: 10px;"></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="info-card h-100 p-4 border-0 shadow-sm text-center">
+                <div class="icon-circle bg-success text-white mb-4">🚜</div>
+                <h4 class="fw-bold mb-3">Smart Tool Rental</h4>
+                <p class="text-muted">Find tractors, harvesters, and irrigation pumps available in your immediate neighborhood. No more long travels for machinery.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="info-card h-100 p-4 border-0 shadow-sm text-center">
+                <div class="icon-circle bg-warning text-dark mb-4">💰</div>
+                <h4 class="fw-bold mb-3">Earn Extra Income</h4>
+                <p class="text-muted">Is your tractor sitting idle? Turn it into a money-making machine by listing it on our platform safely and securely.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="info-card h-100 p-4 border-0 shadow-sm text-center">
+                <div class="icon-circle bg-primary text-white mb-4">🛡️</div>
+                <h4 class="fw-bold mb-3">Handover Protection</h4>
+                <p class="text-muted">Our unique photo-proof system ensures your equipment stays safe. We handle the digital agreements so you don't have to.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid py-5" style="background-color: #E8F0E6;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="display-6 fw-bold mb-4" style="color: var(--village-green);">Simple. Reliable. Local.</h2>
+                <ul class="list-unstyled">
+                    <li class="mb-3 d-flex align-items-start">
+                        <span class="badge bg-success rounded-circle me-3 p-2">1</span>
+                        <div><strong>Register:</strong> Create your village profile in 2 minutes.</div>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <span class="badge bg-success rounded-circle me-3 p-2">2</span>
+                        <div><strong>Search:</strong> Filter tools by pincode and availability.</div>
+                    </li>
+                    <li class="mb-3 d-flex align-items-start">
+                        <span class="badge bg-success rounded-circle me-3 p-2">3</span>
+                        <div><strong>Work:</strong> Book the tool, finish your farming, and pay securely.</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/farmer_working.webp' %}" alt="Farmers working" class="img-fluid rounded-4 shadow">
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hero Section with dark overlay */
+    .hero-container {
+        height: 80vh;
+        background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        border-radius: 0 0 50px 50px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Makes the text readable */
+    }
+
+    /* Card Styling & Hover Effects */
+    .info-card {
+        border-radius: 25px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: white;
+    }
+
+    .info-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+        background-color: #fff;
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        border-radius: 50%;
+        font-size: 2.5rem;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .opacity-90 { opacity: 0.9; }
+</style>
+{% endblock %}
